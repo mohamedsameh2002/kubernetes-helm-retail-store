@@ -1,0 +1,15 @@
+# Catalog Custom Values
+mysql:
+  create: true 
+
+app:
+  persistence:
+    provider: mysql
+    endpoint: ""
+    database: "catalog"
+
+    secret:
+      create: true
+      name: catalog-db
+      username: mydbadmin
+      password: kalyandb101

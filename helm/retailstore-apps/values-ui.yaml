@@ -1,0 +1,21 @@
+app:
+  theme: green # Other options: orange, default, green, teal
+  endpoints: 
+    catalog: http://catalog.default.svc.cluster.local:80
+    carts: http://cart-carts.default.svc.cluster.local:80
+    checkout: http://checkout.default.svc.cluster.local:80
+    orders: http://orders.default.svc.cluster.local:80
+
+
+
+# Ingress for load balancer
+ingress:
+  enabled: true
+  className: alb
+  annotations: 
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
+  tls: []
+  hosts: []
+ 

@@ -1,0 +1,16 @@
+app:
+  persistence:
+    provider: dynamodb
+    dynamodb:
+      tableName: Items
+      createTable: true
+
+dynamodb:
+  create: true
+  image:
+    repository: public.ecr.aws/aws-dynamodb-local/aws-dynamodb-local
+    pullPolicy: IfNotPresent
+    tag: "1.25.1"
+  service:
+    type: ClusterIP
+    port: 8000
