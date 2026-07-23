@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: public.ecr.aws/aws-containers/retail-store-sample-ui
+  repository: 358592703668.dkr.ecr.us-east-1.amazonaws.com/retail-store/ui
   pullPolicy: IfNotPresent
   tag: 
 
