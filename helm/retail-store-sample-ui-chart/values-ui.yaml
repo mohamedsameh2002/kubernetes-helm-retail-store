@@ -1,5 +1,5 @@
 app:
-  theme: green # Other options: orange, default, green, teal
+  theme: green # Other options: orange, default, green, teal--
   endpoints: 
     catalog: http://catalog.default.svc.cluster.local:80
     carts: http://cart-carts.default.svc.cluster.local:80
