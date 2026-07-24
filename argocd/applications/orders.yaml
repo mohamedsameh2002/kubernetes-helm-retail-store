@@ -1,17 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ui
+  name: orders
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/mohamedsameh2002/kubernetes-helm-retail-store.git
     targetRevision: main
-    path: helm/retail-store-sample-ui-chart
+    path: helm/orders-chart
     helm:
       valueFiles:
-        - values-ui.yaml
+        - values-orders.yaml
+    # ned checkr here to decide is values prodaction or dev
   destination:
     server: https://kubernetes.default.svc
     namespace: default
