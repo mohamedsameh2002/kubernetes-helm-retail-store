@@ -35,7 +35,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "orders.serviceAccountName" . }}
+      serviceAccountName: orders-postgresql
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -56,7 +56,7 @@ spec:
                 name: {{ include "orders.configMapName" . }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -72,10 +72,25 @@ spec:
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume
+            {{- if and (eq .Values.app.persistence.provider "postgres") .Values.app.persistence.secret.useSecretsManager }}
+            # Mount CSI secrets volume only when Secrets Manager is enabled
+            - name: aws-secrets
+              mountPath: /mnt/secrets-store
+              readOnly: true
+            {{- end }}              
       volumes:
         - name: tmp-volume
           emptyDir:
             medium: Memory
+        {{- if and (eq .Values.app.persistence.provider "postgres") .Values.app.persistence.secret.useSecretsManager }}
+        # Add CSI secrets volume only when Secrets Manager is enabled
+        - name: aws-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ include "orders.fullname" . }}-secrets
+        {{- end }}            
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

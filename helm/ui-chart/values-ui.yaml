@@ -1,21 +1,68 @@
+# ============================================================================
+# UI SERVICE - CUSTOM VALUES
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# IMAGE CONFIGURATION
+# ----------------------------------------------------------------------------
+image:
+  repository: public.ecr.aws/aws-containers/retail-store-sample-ui
+  pullPolicy: IfNotPresent
+  tag: 1.3.0
+
+# ----------------------------------------------------------------------------
+# APPLICATION CONFIGURATION
+# ----------------------------------------------------------------------------
 app:
-  theme: green # Other options: orange, default, green, teal--
-  endpoints: 
-    catalog: http://catalog.default.svc.cluster.local:80
-    carts: http://cart-carts.default.svc.cluster.local:80
-    checkout: http://checkout.default.svc.cluster.local:80
-    orders: http://orders.default.svc.cluster.local:80
+  theme: green  # Options: orange, default, green, teal
+  
+  endpoints:
+    catalog: http://catalog:80
+    carts: http://carts:80
+    checkout: http://checkout:80
+    orders: http://orders:80
 
+  chat:
+    enabled: false  # Not using AI chat features
 
-
-# Ingress for load balancer
+# ----------------------------------------------------------------------------
+# INGRESS CONFIGURATION - AWS ALB
+# ----------------------------------------------------------------------------
 ingress:
   enabled: true
   className: alb
-  annotations: 
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/liveness
-  tls: []
-  hosts: []
- 
+  name: retail-store-http-ip-mode
+  alb:
+    loadBalancerName: retail-store-http-ip-mode
+    scheme: internet-facing
+    targetType: ip
+    sslRedirectPort: "443"
+    certificateArn: "arn:aws:acm:us-east-1:358592703668:certificate/76d64c6d-ca45-4b24-b1f6-7486089afd2a"
+    listenPorts: '[{"HTTP":80},{"HTTPS":443}]'
+    healthcheck:
+      protocol: HTTP
+      port: traffic-port
+      path: /actuator/health/readiness
+      intervalSeconds: "15"
+      timeoutSeconds: "5"
+      successCodes: "200"
+      healthyThresholdCount: "2"
+      unhealthyThresholdCount: "2"
+  
+  # Dynamic Hostnames for ExternalDNS (if configured)
+  # hostnames:
+  #   - retailstore1.stacksimplify.com
+  #   - retailstore2.stacksimplify.com
+  #   - retailstore3.stacksimplify.com
+
+# ----------------------------------------------------------------------------
+# SERVICE CONFIGURATION
+# ----------------------------------------------------------------------------
+service:
+  name: ui
+  port: 80
+
+
+opentelemetry:
+  enabled: true
+  instrumentation: "default-instrumentation"

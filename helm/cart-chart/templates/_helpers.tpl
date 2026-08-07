@@ -2,16 +2,9 @@
 {{/*
 Expand the name of the chart.
 */}}
-
-
-
 {{- define "carts.name" -}}
 {{- default "carts" .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
-
-
-
-
 
 {{/*
 Create a default fully qualified app name.
@@ -22,17 +15,9 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default "carts" .Values.nameOverride }}
-{{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
-{{- else }}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- end }}
-{{- end }}
-
-
-
 
 {{/*
 Create chart name and version as used by the chart label.
@@ -40,9 +25,6 @@ Create chart name and version as used by the chart label.
 {{- define "carts.chart" -}}
 {{- printf "%s-%s" "carts" .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
-
-
-
 
 {{/*
 Common labels
@@ -56,9 +38,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
-
-
-
 {{/*
 Selector labels
 */}}
@@ -68,9 +47,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: service
 app.kubernetes.io/owner: retail-store-sample
 {{- end }}
-
-
-
 
 {{/*
 Create the name of the service account to use
@@ -83,10 +59,6 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
-
-
-
-
 {{/*
 Create the name of the config map to use
 */}}
@@ -98,10 +70,6 @@ Create the name of the config map to use
 {{- end }}
 {{- end }}
 
-
-
-
-
 {{/* podAnnotations */}}
 {{- define "carts.podAnnotations" -}}
 {{- if or .Values.metrics.enabled .Values.podAnnotations }}
@@ -112,16 +80,9 @@ Create the name of the config map to use
 {{- end }}
 {{- end -}}
 
-
-
-
 {{- define "carts.dynamodb.fullname" -}}
 {{- include "carts.fullname" . }}-dynamodb
 {{- end -}}
-
-
-
-
 
 {{/*
 Common labels for dynamodb
@@ -134,8 +95,6 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
-
-
 
 {{/*
 Selector labels for dynamodb

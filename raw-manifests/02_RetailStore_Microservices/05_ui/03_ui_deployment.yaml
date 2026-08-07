@@ -31,6 +31,30 @@ spec:
         app.kubernetes.io/component: service
         app.kubernetes.io/owner: retail-store-sample
     spec:
+      # TOPOLOGY SPREAD CONSTRAINTS - Distribute pods across nodes AND availability zones
+      topologySpreadConstraints:
+        # Spread across nodes (within same AZ)
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: ui
+              app.kubernetes.io/component: service
+              app.kubernetes.io/instance: ui
+        
+        # Spread across availability zones
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: ui
+              app.kubernetes.io/component: service
+              app.kubernetes.io/instance: ui  
+      # THIS IS CRITICAL - Forces pods to run ONLY on on-demand nodes
+      nodeSelector:
+        karpenter.sh/capacity-type: on-demand    
       serviceAccountName: ui
       securityContext:
         fsGroup: 1000
@@ -73,13 +97,18 @@ spec:
             httpGet:
               path: /actuator/health/readiness
               port: 8080
-            initialDelaySeconds: 10
+            initialDelaySeconds: 60  
+            periodSeconds: 10
+            timeoutSeconds: 5        
+            successThreshold: 1
+            failureThreshold: 3               
           resources:
             limits:
               memory: 512Mi
+              cpu: 500m              
             requests:
-              cpu: 128m
-              memory: 512Mi
+              memory: 356Mi
+              cpu: 128m              
           volumeMounts:
             - mountPath: /tmp
               name: tmp-volume

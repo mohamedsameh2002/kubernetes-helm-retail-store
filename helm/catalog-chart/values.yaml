@@ -74,15 +74,21 @@ configMap:
 
 app:
   persistence:
-    provider: in-memory
+    provider: in-memory  # Options: in-memory, mysql
     endpoint: ""
     database: "catalog"
 
     secret:
-      create: true
+      create: true  # Set to FALSE when using Secrets Manager
       name: catalog-db
       username: catalog
       password: ""
+      
+      # NEW: Secrets Manager configuration
+      useSecretsManager: false  # Enable to use AWS Secrets Manager
+      secretsManager:
+        secretName: "retailstore-db-secret-1"  # AWS Secrets Manager secret name
+        region: "us-east-1"  # AWS region
 
 mysql:
   create: false

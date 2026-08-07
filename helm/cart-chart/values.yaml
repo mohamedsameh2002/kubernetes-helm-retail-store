@@ -11,7 +11,7 @@ image:
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: "carts"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -78,6 +78,8 @@ app:
     dynamodb:
       tableName: Items
       createTable: false
+      endpoint: ""       # DynamoDB endpoint (e.g., https://dynamodb.us-west-2.amazonaws.com)
+      region: ""         # AWS region (e.g., us-west-2)
 
 dynamodb:
   create: false

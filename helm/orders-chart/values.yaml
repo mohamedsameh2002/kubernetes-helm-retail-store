@@ -74,18 +74,27 @@ configMap:
 
 app:
   persistence:
-    provider: 'in-memory'
+    provider: 'in-memory'  # Options: in-memory, postgres
     endpoint: ''
     database: 'orders'
 
     secret:
-      create: true
+      create: true  # Set to FALSE when using Secrets Manager
       name: orders-db
       username: orders
       password: ""
+      
+      # NEW: Secrets Manager configuration
+      useSecretsManager: false  # Enable to use AWS Secrets Manager
+      secretsManager:
+        secretName: "retailstore-db-secret-1"  # AWS Secrets Manager secret name
+        region: "us-east-1"  # AWS region
 
   messaging:
-    provider: 'in-memory'
+    provider: 'in-memory'  # Options: in-memory, sqs, rabbitmq
+
+    sqs:
+      queueName: ""  # SQS queue name (e.g., retail-dev-orders-queue)
 
     rabbitmq:
       addresses: []
